@@ -1,0 +1,35 @@
+# Produced by CVXGEN, 2022-07-28 15:13:01 -0400.
+# CVXGEN is Copyright (C) 2006-2017 Jacob Mattingley, jem@cvxgen.com.
+# The code in this file is Copyright (C) 2006-2017 Jacob Mattingley.
+# CVXGEN, or solvers produced by CVXGEN, cannot be used for commercial
+# applications without prior written permission from Jacob Mattingley.
+
+# Filename: description.cvxgen.
+# Description: A description of the CVXGEN problem.
+
+dimensions
+  m = 1
+  n = 3
+  T = 20
+end
+
+parameters
+  A (n,n)
+  B (n,m)
+  Q (n,n) psd
+  R (1,1) psd
+  x[0] (n)
+  u_max
+end
+
+variables
+  x[t] (n), t=1..T+1
+  u[t] (m), t=0..T
+end
+
+minimize
+  sum[t=0..T](quad(x[t], Q) + quad(u[t], R))
+subject to
+  x[t+1] == A*x[t] + B*u[t], t=0..T  # dynamics constraints.
+  abs(u[t]) <= u_max, t=0..T  # maximum input box constraint.
+end
